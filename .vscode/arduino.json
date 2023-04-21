@@ -1,0 +1,5 @@
+{
+    "sketch": "nesten ferdig enigma\\nesten ferdig enigma.ino",
+    "board": "arduino:avr:uno",
+    "port": "COM7"
+}
