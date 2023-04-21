@@ -15,14 +15,155 @@ int pausedash = 750; //Delay for dash morse
 char ch; //Variabel for hvilke bokstaver som blir skrevet
 int lengde = 0; //Variabel for lengde av ordet som skrives
 String code = ""; //String for hele ordet som blir skrevet i seriell output
-double enigma1[200];
-double enigma2[] = {201, 400};
-double enigma3[] = {401, 600};
-double enigma4[] = {601, 800};
-double enigma5[] = {801, 1000};
-bool enigma_setting = false;
+int enigma1[] = {0, 200}; //Array for potmeter posisjon
+int enigma2[] = {201, 400};
+int enigma3[] = {401, 600};
+int enigma4[] = {601, 800};
+int enigma5[] = {801, 1000};
+int* enigmaPos = enigma1; 
+
+void setup() { // flyttet settup fra bunnen til toppen
+  Serial.begin(9600);
+  SWSerial.begin(9600);
+  // Setup the button with an internal pull-up
+  pinMode(buttonPin, INPUT_PULLUP);
+  button.attach(buttonPin);
+  button.interval(20);//set debounce interval
+}
+void loop() {
+
+int pot_value = analogRead(A0);
 
 
+if(pot_value >= enigmaPos[0] && pot_value <= enigmaPos[1]){ //Sjekker om potmeter er i riktig posisjon for å skrive bokstav i morse kode 
+  // Update the Bounce instance, does digitalRead of button
+  button.update();
+
+  // Button press transition from HIGH to LOW)
+  if (button.fell())
+  {
+    buttonPressStartTimeStamp = millis();
+    tone(3, 3000);
+  }
+
+  // Button release transition from LOW to HIGH) :
+  if (button.rose())
+  {
+    buttonPressDuration = (millis() - buttonPressStartTimeStamp);
+    buttonPause = millis();
+    noTone(3);
+  }
+
+  if ((buttonPressDuration <= 200) && (buttonPressDuration > 10)){
+    buttonPressDuration = 0;
+    Serial.print(".");
+  }
+
+  else if (buttonPressDuration > 200){
+    buttonPressDuration = 0;
+    Serial.print("_");
+  }
+
+    if (button.fell())
+  {
+    buttonDivider = (millis() - buttonPause);
+  }
+
+  if(((buttonDivider) > 750) && ((buttonDivider) < 1750)){
+    buttonPause = 0;
+    buttonDivider = 0;
+    Serial.print(" ");
+  }
+
+  else if((buttonDivider) >= 1750){
+    buttonPause = 0;
+    buttonDivider = 0;
+    Serial.print("/ ");
+  }
+
+
+  if(Serial.available() > 0){
+    code = Serial.readString();
+    Serial.print(code);
+    Serial.print("= ");
+    Serial.println("");
+    SWSerial.print(code);
+    delay(1000);
+    Ord2Morse();
+  }
+
+  if(SWSerial.available() > 0){
+    code = SWSerial.readString();
+    Serial.println("");
+    Ord2Morse();
+    Serial.println("");
+  }
+ } 
+
+else{
+  button.update();
+
+  // Button press transition from HIGH to LOW)
+  if (button.fell())
+  {
+    buttonPressStartTimeStamp = millis();
+    tone(3, 3000);
+  }
+
+  // Button release transition from LOW to HIGH) :
+  if (button.rose())
+  {
+    buttonPressDuration = (millis() - buttonPressStartTimeStamp);
+    buttonPause = millis();
+    noTone(3);
+  }
+
+  if ((buttonPressDuration <= 200) && (buttonPressDuration > 10)){
+    buttonPressDuration = 0;
+    Serial.print("-");
+  }
+
+  else if (buttonPressDuration > 200){
+    buttonPressDuration = 0;
+    Serial.print(".");
+  }
+
+    if (button.fell())
+  {
+    buttonDivider = (millis() - buttonPause);
+  }
+
+  if(((buttonDivider) > 750) && ((buttonDivider) < 1750)){
+    buttonPause = 0;
+    buttonDivider = 0;
+    Serial.print("/");
+  }
+
+  else if((buttonDivider) >= 1750){
+    buttonPause = 0;
+    buttonDivider = 0;
+    Serial.print("æ");
+  }
+
+
+  if(Serial.available() > 0){
+    code = Serial.readString();
+    Serial.print(code);
+    Serial.print("= ");
+    Serial.println("");
+    SWSerial.print(code);
+    delay(1000);
+    Ord2Morse();
+  }
+
+  if(SWSerial.available() > 0){
+    code = SWSerial.readString();
+    Serial.println("");
+    Ord2Morse();
+    Serial.println("");
+  }
+}
+}
 //Funksjon for en dot i morsekode
 void dot(){ 
   Serial.print(".");
@@ -615,84 +756,4 @@ void Ord2Morse(){
     morse();
   }
 
-}
-
-void setup() {
-  Serial.begin(9600);
-  SWSerial.begin(9600);
-  // Setup the button with an internal pull-up
-  pinMode(buttonPin, INPUT_PULLUP);
-  button.attach(buttonPin);
-  button.interval(20);//set debounce interval
-}
-
-void loop() {
-
-double pot_value = analogRead(A0);
-
-for()
-if(arrayIncludeElement(enigma1, pot_value)){
-  // Update the Bounce instance, does digitalRead of button
-  button.update();
-
-  // Button press transition from HIGH to LOW)
-  if (button.fell())
-  {
-    buttonPressStartTimeStamp = millis();
-    tone(3, 3000);
-  }
-
-  // Button release transition from LOW to HIGH) :
-  if (button.rose())
-  {
-    buttonPressDuration = (millis() - buttonPressStartTimeStamp);
-    buttonPause = millis();
-    noTone(3);
-  }
-
-  if ((buttonPressDuration <= 200) && (buttonPressDuration > 10)){
-    buttonPressDuration = 0;
-    Serial.print(".");
-  }
-
-  else if (buttonPressDuration > 200){
-    buttonPressDuration = 0;
-    Serial.print("_");
-  }
-
-    if (button.fell())
-  {
-    buttonDivider = (millis() - buttonPause);
-  }
-
-  if(((buttonDivider) > 750) && ((buttonDivider) < 1750)){
-    buttonPause = 0;
-    buttonDivider = 0;
-    Serial.print(" ");
-  }
-
-  else if((buttonDivider) >= 1750){
-    buttonPause = 0;
-    buttonDivider = 0;
-    Serial.print("/ ");
-  }
-
-
-  if(Serial.available() > 0){
-    code = Serial.readString();
-    Serial.print(code);
-    Serial.print("= ");
-    Serial.println("");
-    SWSerial.print(code);
-    delay(1000);
-    Ord2Morse();
-  }
-
-  if(SWSerial.available() > 0){
-    code = SWSerial.readString();
-    Serial.println("");
-    Ord2Morse();
-    Serial.println("");
-  }
-}
 }
