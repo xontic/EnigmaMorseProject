@@ -145,14 +145,16 @@ else{
   }
 
 
-  if(Serial.available() > 0){
+  if(Serial.available() > 0){ // VAR KANSJE HER GARBO OG RANDOM SKULLE VÆRE   // endret til garbledMessage og randomMessage
     code = Serial.readString();
     Serial.print(code);
     Serial.print("= ");
     Serial.println("");
     SWSerial.print(code);
     delay(1000);
-    Ord2Morse();
+    garbledMessage(); // endret til garbledMessage
+    Serial.println("");
+    randomMessage(); // endret til randomMessage
   }
 
   if(SWSerial.available() > 0){
