@@ -186,6 +186,7 @@ char randomMorseChar() {
 // function to generate a random morse message
 void randomMessage() {
   for (int i = 0; i < lengde; i++) {
+    lengde = code.length();
     Serial.print(randomMorseChar());
     Serial.print(" ");
     delay(50); // to simulate the time between each character in morse code
@@ -195,6 +196,7 @@ void randomMessage() {
 // function to generate a garbled morse message
 void garbledMessage() {
   for (int i = 0; i < lengde; i++) {
+    lengde = code.length();
     Serial.print(randomMorseChar());
     Serial.print(" ");
     delay(random(50, 500)); // to add random delay between each character in morse code
